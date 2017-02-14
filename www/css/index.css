@@ -54,13 +54,26 @@ body {
 a.list-button.item-link {
     color: #ffffff;
     text-align: center;
-    line-height: 80px !important;
-}
-
-a.list-color-red {
-    background-color: #f44336;
 }
 
 a.list-color-green {
     background-color: #4caf50;
+    line-height: 140px !important;
+    font-size: 40px !important;
+    color: #ffffff !important;
+}
+
+a.list-color-red {
+    background-color: #f44336;
+    line-height: 60px !important;
+    font-size: 40px !important;
+    color: #ffffff !important;
+}
+
+ul {
+    padding: 0 !important;
+}
+
+.item-inner > .item-title.label {
+    width: 100% !important;
 }

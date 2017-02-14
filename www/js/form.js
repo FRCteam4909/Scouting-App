@@ -1,3 +1,5 @@
+var template;
+
 // Handlebars Helpers
 
 // http://doginthehat.com.au/2012/02/comparison-block-helper-for-handlebars-templates/
@@ -43,6 +45,10 @@ Handlebars.registerHelper('compare', function(lvalue, rvalue, options) {
 
 });
 
+Handlebars.registerHelper('formtemplate', function(context) {
+    return template(context);
+});
+
 // Make Form JSON Global
 var form = {};
 
@@ -51,53 +57,55 @@ function configureForm(){
 		// Parse Form JSON
 		form = JSON.parse(data);
 		
-		window.plugins.simpleFile.external.read(config.receiveFolder + "form-template.html", function(source) {
-			
-			// GENERATE TEMPLATE
-			const template = Handlebars.compile(source),
-				  res = template(form);
-			
-			// DISPLAY FORM
-			$("#mainPage").html(res);
-            
-            $("." + form.views[0].id).show();
+		window.plugins.simpleFile.external.read(config.receiveFolder + "page-template.html", function(pageSource) {
+            window.plugins.simpleFile.external.read(config.receiveFolder + "form-template.html", function(formSource) {
 
-			// Click Handler for Submit Button
-			$(".submit-button").click(function(event){
-				var match = {};
+                // GENERATE TEMPLATE
+                const pageTemplate = Handlebars.compile(pageSource);
+                template = Handlebars.compile(formSource);
+                const res = pageTemplate(form);
 
-				for(key in form.match_record){
-                    inputType = form.match_record[key].split(":")[0];
-                    inputId = form.match_record[key].split(":")[1];
-                    
-                    switch(inputType){
-                        case "text":
-                            match[key] = $(inputId).val();
-                            break;
-                        case "number":
-                            match[key] = Number($(inputId).val());
-                            break;
-                        case "checkbox":
-                            match[key] = Number($(inputId)[0].checked);
-                            break;
-                        case "incr":
-                            if($(inputId).val() > 0)
+                // DISPLAY FORM
+                $("#mainPage").html(res);
+
+                $("." + form.views[0].id).show();
+
+                // Click Handler for Submit Button
+                $(".submit-button").click(function(event){
+                    var match = {};
+
+                    for(key in form.match_record){
+                        inputType = form.match_record[key].split(":")[0];
+                        inputId = form.match_record[key].split(":")[1];
+
+                        switch(inputType){
+                            case "text":
+                                match[key] = $(inputId).val();
+                                break;
+                            case "number":
                                 match[key] = Number($(inputId).val());
-                            else
-                                match[key] = 0;
-                            break;
+                                break;
+                            case "checkbox":
+                                match[key] = Number($(inputId)[0].checked);
+                                break;
+                            case "incr":
+                                if($(inputId).val() > 0)
+                                    match[key] = Number($(inputId).val());
+                                else
+                                    match[key] = 0;
+                                break;
+                        }
                     }
-				}
 
-				console.dir(match);
+                    // Send data to Hub
+                    dataTransfer.send(config, match);
 
-				// Send data to Hub
-				dataTransfer.send(config, match);
+                    // Reset and repopulate form
+                    configureForm();
+                });
 
-				// Reset and repopulate form
-				configureForm();
-			});
-			
+            }, dataTransfer.handleError);
+            
 		}, dataTransfer.handleError);
 		
 	}, dataTransfer.handleError);
