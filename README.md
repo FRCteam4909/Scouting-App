@@ -1,4 +1,4 @@
-# The Green Alliance App
+# The Green Alliance - App
 
 ## Installation
 - [Install Android Studio.](https://developer.android.com/studio/intro/index.html)
