@@ -8,4 +8,4 @@
 cordova platform add android
 cordova plugins restore
 ```
-- Run `cordova run android -device` to Install App, Uses First USB Android Found
+- Run `cordova run android -device` to install app, with one device at a time.
