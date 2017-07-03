@@ -83,7 +83,11 @@ function configureForm(){
                                 match[key] = $(inputId).val();
                                 break;
                             case "number":
-                                match[key] = Number($(inputId).val());
+				if($(inputId).attr("min") <= Number($(inputId).val()) &&
+					Number($(inputId).val()) <= $(inputId).attr("max"))
+	                                match[key] = Number($(inputId).val());
+				else
+					alert("The " + inputId + " input field is not within the acceptable range.");
                                 break;
                             case "checkbox":
                                 match[key] = Number($(inputId)[0].checked);
